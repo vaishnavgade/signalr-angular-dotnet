@@ -1,4 +1,5 @@
 using Realtime.Server.Models;
+using Realtime.Server.TimerFeatures;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+
+builder.Services.AddSingleton<TimerManager>();
 
 var app = builder.Build();
 
