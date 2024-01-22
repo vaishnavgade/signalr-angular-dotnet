@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "RealTimeCharts.Server": {
+    "realtime": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
