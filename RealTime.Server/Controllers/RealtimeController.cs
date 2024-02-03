@@ -19,13 +19,38 @@ public class RealtimeController : Controller
         _timer = timer;
     }
 
-    [HttpGet]
-    public IActionResult Get()
+    private Action TransferRealTimeData()
+    {
+        return () => _hub.Clients.All.SendAsync("TransferRealtimeData", DataManager.GetData());
+    }
+
+    [HttpGet("startauto")]
+    public IActionResult StartAuto()
     {
         if(!_timer.IsTimerStarted)
         {
-            _timer.PrepareTimer(() => _hub.Clients.All.SendAsync("TransferRealtimeData", DataManager.GetData()));
+            _timer.PrepareTimer(TransferRealTimeData());
         }
-        return Ok(new { Message = "Request Completed" });
+        return Ok(new { Message = "Started realtime data transfer until 60 seconds elapses" });
+    }
+
+    [HttpGet("start")]
+    public IActionResult Start()
+    {
+        if(!_timer.IsTimerStarted)
+        {
+            _timer.PrepareManualTimer(TransferRealTimeData());
+        }
+        return Ok(new { Message = "Started realtime data transfer until stopped" });
+    }
+
+    [HttpGet("stop")]
+    public IActionResult Stop()
+    {
+        if(_timer.IsTimerStarted)
+        {
+            _timer.StopTimer();
+        }
+        return Ok(new { Message = "Stopped realtime data transfer" });
     }
 }

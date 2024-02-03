@@ -1,3 +1,3 @@
 export interface RealtimeModel {
-    realtimeNumber: Number;
+    realtimeNumber: number;
 }

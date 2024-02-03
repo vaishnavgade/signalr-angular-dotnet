@@ -13,7 +13,7 @@ public class TimerManager
     {
         _action = action;
         _autoResetEvent = new AutoResetEvent(false);
-        
+
         // The timer will make a one-second pause before the first execution.
         _timer = new Timer(Excute, _autoResetEvent, 1000, 2000);
         TimerStarted = DateTime.Now;
@@ -24,10 +24,26 @@ public class TimerManager
     {
         _action();
 
-        if((DateTime.Now - TimerStarted).TotalSeconds > 60)
+        // auto stop/dispose timer after 60 seconds since the start
+        if ((DateTime.Now - TimerStarted).TotalSeconds > 60)
         {
-            IsTimerStarted = false;
-            _timer?.Dispose();
+            StopTimer();
         }
+    }
+
+    public void PrepareManualTimer(Action action)
+    {
+        _autoResetEvent = new AutoResetEvent(false);
+
+        // The timer will make a one-second pause before the first execution.
+        _timer = new Timer(s => action(), _autoResetEvent, 1000, 2000);
+        TimerStarted = DateTime.Now;
+        IsTimerStarted = true;
+    }
+
+    public void StopTimer()
+    {
+        IsTimerStarted = false;
+        _timer?.Dispose();
     }
 }
