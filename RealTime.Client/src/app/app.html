@@ -1,5 +1,5 @@
-<h1>Real time Number: {{this.signalRService.data.realtimeNumber}}</h1>
-<h2>Message: {{this.data.message}}</h2>
+<h1>Real time Number: {{this.signalRService.data().realtimeNumber}}</h1>
+<h2>Message: {{this.data().message}}</h2>
 <button type="button" (click)="startAuto()">Start Auto</button>
 <button type="button" (click)="start()">Start</button>
 <button type="button" (click)="stop()">Stop</button>

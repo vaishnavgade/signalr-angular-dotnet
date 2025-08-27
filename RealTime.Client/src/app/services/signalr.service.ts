@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
 import { RealtimeModel } from '../interfaces/realtime-model';
 
@@ -8,7 +8,7 @@ import { RealtimeModel } from '../interfaces/realtime-model';
 export class SignalrService {
   private hubConnection: signalR.HubConnection | undefined;
 
-  public data: RealtimeModel = <RealtimeModel>{};
+  public data: WritableSignal<RealtimeModel> = signal(<RealtimeModel>{});
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -23,7 +23,7 @@ export class SignalrService {
 
   public addTransferRealtimeDataListener = () => {
     this.hubConnection?.on('TransferRealtimeData', (data) => {
-      this.data = data;
+      this.data.set(data);
       console.log(data);
     });
   }

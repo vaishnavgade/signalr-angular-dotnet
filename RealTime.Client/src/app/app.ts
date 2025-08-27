@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { SignalrService } from './services/signalr.service';
@@ -6,17 +6,16 @@ import { MessageModel } from './interfaces/message-model';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  templateUrl: './app.html',
+  styleUrl: './app.css',
+  providers: [SignalrService]
 })
-export class AppComponent implements OnInit {
+export class App implements OnInit {
 
-  public data: MessageModel = <MessageModel>{};
+  public data: WritableSignal<MessageModel> = signal(<MessageModel>{});
+  public signalRService: SignalrService = inject(SignalrService);
 
-  constructor(
-    private httpClient: HttpClient,
-    public signalRService: SignalrService
-  ) { }
+  private httpClient: HttpClient = inject(HttpClient);
 
   ngOnInit() {
     this.signalRService.startConnection();
@@ -27,7 +26,7 @@ export class AppComponent implements OnInit {
   {
     this.httpClient.get<MessageModel>('https://localhost:5001/api/realtime/startauto')
       .subscribe(res => {
-        this.data = res;
+        this.data.set(res);
         console.log(res);
       }
     );
@@ -37,7 +36,7 @@ export class AppComponent implements OnInit {
   {
     this.httpClient.get<MessageModel>('https://localhost:5001/api/realtime/start')
       .subscribe(res => {
-        this.data = res;
+        this.data.set(res);
         console.log(res);
       }
     );
@@ -47,7 +46,7 @@ export class AppComponent implements OnInit {
   {
     this.httpClient.get<MessageModel>('https://localhost:5001/api/realtime/stop')
       .subscribe(res => {
-        this.data = res;
+        this.data.set(res);
         console.log(res);
       }
     );
